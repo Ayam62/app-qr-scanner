@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "96248933556",
+    "project_id": "sic-project-6bb32",
+    "storage_bucket": "sic-project-6bb32.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96248933556:android:440bae2c90ec076bd77be1",
+        "android_client_info": {
+          "package_name": "com.ayamkattel.sicapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh3AZ_4qNP-3w2fvdg4qmajxhIxQyegOg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
