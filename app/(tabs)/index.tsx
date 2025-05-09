@@ -8,7 +8,7 @@ import * as Clipboard from 'expo-clipboard';
 import { AppState, Platform } from 'react-native';
 import BackgroundService from 'react-native-background-actions';
 
-const SOCKET_URL = 'ws://192.168.1.74:8002/ws/my-phone'; // Updated to match backend
+const SOCKET_URL = 'ws://192.168.1.74:8000/ws/my-phone'; // Updated to match backend
 
 const sleep = (time: number) => new Promise(resolve => setTimeout(resolve, time));
 
@@ -23,8 +23,10 @@ const backgroundClipboardTask = async (taskData: any) => {
       if (currentContent && currentContent !== lastContent) {
         console.log('[BACKGROUND] New clipboard:', currentContent);
 
+
         // Reconnect WebSocket if closed
         if (!socket || socket.readyState !== WebSocket.OPEN) {
+
           console.log('[BACKGROUND] Reconnecting WebSocket...');
           taskData.socket = new WebSocket(SOCKET_URL);
           await new Promise(resolve => setTimeout(resolve, 1000));
@@ -33,7 +35,7 @@ const backgroundClipboardTask = async (taskData: any) => {
 
         // Send to backend
         socket.send(JSON.stringify({
-          types: 'clipboard_update',
+          type: 'clipboard_update',
           text: currentContent,
           timestamp: Date.now()
         }));
@@ -93,17 +95,18 @@ export default function HomeScreen() {
     const intervalId = setInterval(async () => {
       try {
         const content = await Clipboard.getStringAsync();
-        console.log('[CLIPBOARD CHECK]', content); // Always log clipboard content
-
+       // console.log('[CLIPBOARD CHECK]', content); // Always log clipboard content
+        console.log('[CLIPBOARD CHECK]', content, lastClipboardContent!=content,socket?.readyState===WebSocket.OPEN); // Log both content and lastClipboardContent
+        console.log(  content && content !== lastClipboardContent &&socketRef.current?.readyState === WebSocket.OPEN,content)
         if (
           content &&
           content !== lastClipboardContent &&
-          socketRef.current?.readyState === WebSocket.OPEN
+          socket?.readyState === WebSocket.OPEN
         ) {
           console.log('[CLIPBOARD SEND]', content); // Log before sending
-          socketRef.current.send(
+          socket.send(
             JSON.stringify({
-              types: 'clipboard_update',
+              type: 'clipboard_update',
               text:content,
               timestamp: Date.now(),
             })
@@ -134,7 +137,10 @@ export default function HomeScreen() {
 
   const connectWebSocket = (pairingCode: string) => {
     // Create a WebSocket connection to the server
-    const ws = new WebSocket(SOCKET_URL);
+    console.log('Connecting to WebSocket:', SOCKET_URL);
+    //const ws = new WebSocket(SOCKET_URL);
+    const ws = new WebSocket('ws://192.168.1.97:8000/ws/my-phone');
+
 
     ws.onopen = () => {
       console.log('WebSocket connected');
